@@ -514,7 +514,7 @@ bool ConfigGenerator::changeConfig(const string& option)
             // Find remainder of option
             option2 = option.substr(10);
         } else {
-            outputError("Unknown command line option (" + option2 + ")");
+            outputError("Unknown command line option (" + option + ")");
             outputError("Use --help to get available options", false);
             return false;
         }
@@ -535,15 +535,28 @@ bool ConfigGenerator::changeConfig(const string& option)
         if (startPos != string::npos) {
             // Find before the =
             string list = option2.substr(0, startPos);
-            // The actual element name is suffixed by list name (all after the =)
-            option2 = option2.substr(startPos + 1) + "_" + list;
-            // Get the config element
-            if (!isConfigOptionValid(option2)) {
-                outputError("Unknown option (" + option2 + ") in command line option (" + option2 + ")");
-                outputError("Use --help to get available options", false);
-                return false;
-            }
-            toggleConfigValue(option2, enable);
+            string value = option2.substr(startPos + 1);
+            replace(value.begin(), value.end(), '\'', ' ');
+            value.erase(0, value.find_first_not_of(" "));
+            value.erase(value.find_last_not_of(" ") + 1);
+            do {
+                startPos = value.find(',');
+                if (startPos == string::npos) {
+                    option2 = value + "_" + list;
+                } else {
+                    // The actual element name is suffixed by list name (all after the =)
+                    option2 = value.substr(0, startPos) + "_" + list;
+                    value = value.substr(startPos + 1);
+                }
+                // Get the config element
+                if (!isConfigOptionValid(option2)) {
+                    outputWarning("Ignore unknown option (" + option2 + ") in command line option (" + option2 + ")");
+                    //outputError("Use --help to get available options", false);
+                    //return false;
+                } else {
+                    toggleConfigValue(option2, enable);
+                }
+            } while (startPos != string::npos);
         } else {
             // Check for changes to entire list
             if (option2 == "devices") {
