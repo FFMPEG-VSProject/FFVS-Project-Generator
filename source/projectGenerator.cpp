@@ -1637,7 +1637,7 @@ bool ProjectGenerator::outputDependencyLibs(string& projectTemplate, bool progra
             // loop over each debug/release sequence
             uint findPos = projectTemplate.find(libLink2[linkLib]);
             for (uint debugRelease = 0; debugRelease < 2; debugRelease++) {
-                uint max = !program ? (((debugRelease == 1) && (linkLib == 0)) ? 2 : 1) : 2;
+                uint max = !program ? (((debugRelease == 1) && (linkLib == 0)) ? 2 : 1) : ((debugRelease == 1) ? 3: 2);
                 // Libs have:
                 // link:
                 //  DebugDLL|Win32, DebugDLLWinRT|Win32, DebugDLL|x64, DebugDLLWinRT|x64,
@@ -1653,6 +1653,7 @@ bool ProjectGenerator::outputDependencyLibs(string& projectTemplate, bool progra
                 //  DebugDLL|Win32, DebugDLL|x64,
                 //  Release|Win32, Release|x64,
                 //  ReleaseDLL|Win32, ReleaseDLL|x64,
+                //  ReleaseDLLStaticDeps|Win32, ReleaseDLLStaticDeps|x64,
                 for (uint conf = 0; conf < max; conf++) {
                     // Loop over x32/x64
                     for (uint arch = 0; arch < 2; arch++) {
@@ -1665,7 +1666,7 @@ bool ProjectGenerator::outputDependencyLibs(string& projectTemplate, bool progra
                             }
                             // Add in ffmpeg inter-dependencies
                             uint addIndex = debugRelease;
-                            if ((linkLib == 0) && (!program || (conf % 2 != 0))) {
+                            if ((linkLib == 0) && (!program || conf >= 2 || (conf % 2 != 0))) {
                                 // Use DLL libs
                                 addIndex += 2;
                             }

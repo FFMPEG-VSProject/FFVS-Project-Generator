@@ -65,14 +65,6 @@
       <Configuration>ReleaseDLLStaticDeps</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="ReleaseDLLStaticDeps|Win32">
-      <Configuration>ReleaseDLLStaticDeps</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="ReleaseDLLStaticDeps|x64">
-      <Configuration>ReleaseDLLStaticDeps</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="ReleaseWinRT|Win32">
       <Configuration>ReleaseWinRT</Configuration>
       <Platform>Win32</Platform>
